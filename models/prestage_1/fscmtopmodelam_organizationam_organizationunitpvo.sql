@@ -1,0 +1,1 @@
+SELECT * FROM dbt-big-query-project-428712.prestage1.fscmtopmodelam_organizationam_organizationunitpvo
