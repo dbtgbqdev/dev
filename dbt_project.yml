@@ -39,7 +39,7 @@ models:
   my_new_project:
     # Applies to all files under models/example/
     prestage_1:
-      +schema: RAW
+      +schema: raw
     example:
       +materialized: table
 
