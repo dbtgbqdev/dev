@@ -1,5 +1,4 @@
 {% macro log_dbt_results(results) %}
-    -- depends_on: {{ ref('dbt_results') }}
     {%- if execute -%}
         {%- set parsed_results = parse_dbt_results(results) -%}
         {%- if parsed_results | length  > 0 -%}
