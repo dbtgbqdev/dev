@@ -22,8 +22,10 @@ models:
   my_new_project:
     prestage_1:
       +schema: raw
+    stage:
+      +schema: stage
     example:
       +materialized: table
 
-on-run-end:
-  - "{{log_dbt_results(results)}}"
+# on-run-end:
+#   - "{{log_dbt_results(results)}}"
