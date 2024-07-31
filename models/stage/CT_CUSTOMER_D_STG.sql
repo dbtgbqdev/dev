@@ -1,8 +1,8 @@
 {{ config(materialized='incremental',unique_key = 'INTEGRATION_ID')}}
 {% set last_load_date = get_last_load_date()%}
-WITH P as (select * from raw.fscmtopmodelam_partiesanalyticsam_customer),
-A as (select * from raw.fscmtopmodelam_partiesanalyticsam_customeraccount),
-S as (select * from raw.fscmtopmodelam_partiesanalyticsam_custacctsiteuseloc),
+WITH P as (select * from {{ source('extract', 'customer') }} ),-- raw.fscmtopmodelam_partiesanalyticsam_customer),
+A as (select * from {{ source('extract', 'customeraccount') }} ),--raw.fscmtopmodelam_partiesanalyticsam_customeraccount),
+S as (select * from {{ source('extract', 'custacctsiteuseloc') }} ),--raw.fscmtopmodelam_partiesanalyticsam_custacctsiteuseloc),
 CT_CUSTOMER_D_STG as (
 SELECT
   A.ACCOUNTNAME AS CUSTOMER_NAME,

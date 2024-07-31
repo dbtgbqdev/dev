@@ -27,5 +27,5 @@ models:
     example:
       +materialized: table
 
-# on-run-end:
-#   - "{{log_dbt_results(results)}}"
+on-run-end:
+   "{{log_dbt_results(results)}}"
