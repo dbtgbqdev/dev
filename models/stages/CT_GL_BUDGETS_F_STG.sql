@@ -253,23 +253,23 @@ CT_GL_BUDGETS_F_STG AS (
   SELECT 
     CAST(Bal.LEDGER_ID AS STRING) AS LEDGER_ID, 
     CAST(Bal.GLCC_ID AS STRING) AS GLCC_ID, 
-    CAST(Period.PERIOD_NAME + '~' + Period.PERIOD_SET_NAME AS STRING) AS PERIOD_ID, 
+    CAST(CONCAT(Period.PERIOD_NAME, '~', Period.PERIOD_SET_NAME) AS STRING) AS PERIOD_ID, 
     CAST(
       IFNULL(
         CAST(
-    IFNULL(
-        CAST(
+          IFNULL(
             CAST(
-            CONCAT(
-                CAST(EXTRACT(YEAR FROM SAFE.PARSE_DATE('%Y-%m-%d', PERIODENDDATE)) AS STRING), 
-                LPAD(CAST(EXTRACT(MONTH FROM SAFE.PARSE_DATE('%Y-%m-%d', PERIODENDDATE)) AS STRING), 2, '0'), 
-                LPAD(CAST(EXTRACT(DAY FROM SAFE.PARSE_DATE('%Y-%m-%d', PERIODENDDATE)) AS STRING), 2, '0')
-            ) AS INT64
-            ) AS NUMERIC
-        ), 
-        0
-        ) AS STRING
-    ) AS BUDGET_MONTH_ID, 
+              CAST(
+                CONCAT(
+                  CAST(EXTRACT(YEAR FROM SAFE.PARSE_DATE('%Y-%m-%d', PERIODENDDATE)) AS STRING), 
+                  LPAD(CAST(EXTRACT(MONTH FROM SAFE.PARSE_DATE('%Y-%m-%d', PERIODENDDATE)) AS STRING), 2, '0'), 
+                  LPAD(CAST(EXTRACT(DAY FROM SAFE.PARSE_DATE('%Y-%m-%d', PERIODENDDATE)) AS STRING), 2, '0')
+                ) AS INT64
+              ) AS NUMERIC
+            ), 
+            0
+          ) AS STRING
+        ) AS BUDGET_MONTH_ID, 
     Period.PERIOD_NAME AS BUDGET_MONTH, 
     IFNULL(A.BUDGET_NAME_1, 'Budget') AS BUDGET_NAME, 
     Ledger.LEDGER_NAME AS LEDGER_NAME, 
@@ -296,7 +296,7 @@ CT_GL_BUDGETS_F_STG AS (
     IFNULL(NULL, '') AS MGMT_REPORTING_LINE, 
     IFNULL(NULL, '') AS VEW, 
     IFNULL(NULL, '') AS DATA_LOAD_CUBE_NAME, 
-    Bal.LEDGER_ID + '~' + Bal.GLCC_ID + '~' + Period.PERIOD_NAME + '~' + Bal.CURRENCY_CODE AS INTEGRATION_ID, 
+    CONCAT(Bal.LEDGER_ID, '~', Bal.GLCC_ID, '~', Period.PERIOD_NAME, '~', Bal.CURRENCY_CODE) AS INTEGRATION_ID, 
     1000 AS DATASOURCE_NUM_ID 
   FROM 
     balanceextract AS Bal 
@@ -366,10 +366,9 @@ CT_GL_BUDGETS_F_STG AS (
         Budject.OBJ_VERSION_NO AS OBJ_VERSION_NO_1, 
         CCC.INTEGRATION_ID AS INTEGRATION_ID_1 
       FROM 
-        codecombination AS CCC, 
-        budgetbalanceextract AS Budject 
-      WHERE 
-        Budject.SEGMENT1 = CCC.SEGMENT1 
+        codecombination AS CCC 
+        JOIN budgetbalanceextract AS Budject 
+        ON Budject.SEGMENT1 = CCC.SEGMENT1 
         AND Budject.SEGMENT2 = CCC.SEGMENT2 
         AND Budject.SEGMENT3 = CCC.SEGMENT3 
         AND Budject.SEGMENT4 = CCC.SEGMENT4 
@@ -380,21 +379,18 @@ CT_GL_BUDGETS_F_STG AS (
   GROUP BY 
     Bal.LEDGER_ID, 
     Bal.GLCC_ID, 
-    Period.PERIOD_NAME + '~' + Period.PERIOD_SET_NAME, 
+    CONCAT(Period.PERIOD_NAME, '~', Period.PERIOD_SET_NAME), 
     CAST(
-    IFNULL(
+      IFNULL(
         CAST(
-        CONCAT(
+          CONCAT(
             CAST(EXTRACT(YEAR FROM SAFE.PARSE_DATE('%Y-%m-%d', Period.PERIOD_DT_ID)) AS STRING), 
             LPAD(CAST(EXTRACT(MONTH FROM SAFE.PARSE_DATE('%Y-%m-%d', Period.PERIOD_DT_ID)) AS STRING), 2, '0'), 
             LPAD(CAST(EXTRACT(DAY FROM SAFE.PARSE_DATE('%Y-%m-%d', Period.PERIOD_DT_ID)) AS STRING), 2, '0')
-        ) AS STRING
+          ) AS STRING
         ), 
         '0'
-    ) AS STRING
-    ), 
-        0
-        ) AS STRING
+      ) AS STRING
     ), 
     Period.PERIOD_NAME, 
     IFNULL(A.BUDGET_NAME_1, 'Budget'), 
@@ -410,7 +406,7 @@ CT_GL_BUDGETS_F_STG AS (
     CC.SEGMENT8, 
     A.OBJ_VERSION_NO_1, 
     Ledger.LEDGER_CURR_CODE, 
-    Bal.LEDGER_ID + '~' + Bal.GLCC_ID + '~' + Period.PERIOD_NAME + '~' + Bal.CURRENCY_CODE 
+    CONCAT(Bal.LEDGER_ID, '~', Bal.GLCC_ID, '~', Period.PERIOD_NAME, '~', Bal.CURRENCY_CODE)
 )
 SELECT 
   * 
