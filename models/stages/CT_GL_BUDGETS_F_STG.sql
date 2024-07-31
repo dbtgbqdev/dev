@@ -263,7 +263,7 @@ CT_GL_BUDGETS_F_STG AS (
             LPAD(CAST(EXTRACT(DAY FROM SAFE.PARSE_DATE('%Y-%m-%d', Period.PERIOD_DT_ID)) AS STRING), 2, '0')
           ) AS INT64
         ) AS NUMERIC
-      ) AS STRING
+      , '0') AS STRING
     ) AS BUDGET_MONTH_ID, 
     Period.PERIOD_NAME AS BUDGET_MONTH, 
     IFNULL(A.BUDGET_NAME_1, 'Budget') AS BUDGET_NAME, 
@@ -309,7 +309,7 @@ CT_GL_BUDGETS_F_STG AS (
         CCC.SEGMENT2 AS SEGMENT2, 
         CCC.SEGMENT3 AS SEGMENT3, 
         CCC.SEGMENT4 AS SEGMENT4, 
-        CCC.SEGMENT5 AS SEGMENT5, 
+        CCC.SEGMENT5 AS SEGMENT5,
         Budject.BUDGET_NAME AS BUDGET_NAME, 
         Budject.CURRENCY_CODE AS CURRENCY_CODE, 
         Budject.CURRENCY_TYPE AS CURRENCY_TYPE, 
@@ -370,7 +370,7 @@ CT_GL_BUDGETS_F_STG AS (
         AND Budject.SEGMENT5 = CCC.SEGMENT5
     ) A ON Bal.GLCC_ID = A.INTEGRATION_ID_1 
   WHERE 
-    1 = 1 
+     1 = 1 
   GROUP BY 
     Bal.LEDGER_ID, 
     Bal.GLCC_ID, 
@@ -382,10 +382,9 @@ CT_GL_BUDGETS_F_STG AS (
             CAST(EXTRACT(YEAR FROM SAFE.PARSE_DATE('%Y-%m-%d', Period.PERIOD_DT_ID)) AS STRING), 
             LPAD(CAST(EXTRACT(MONTH FROM SAFE.PARSE_DATE('%Y-%m-%d', Period.PERIOD_DT_ID)) AS STRING), 2, '0'), 
             LPAD(CAST(EXTRACT(DAY FROM SAFE.PARSE_DATE('%Y-%m-%d', Period.PERIOD_DT_ID)) AS STRING), 2, '0')
-          ) AS STRING
-        ), 
-        '0'
-      ) AS STRING
+          ) AS INT64
+        ) AS NUMERIC
+      , '0') AS STRING
     ), 
     Period.PERIOD_NAME, 
     IFNULL(A.BUDGET_NAME_1, 'Budget'), 
