@@ -26,7 +26,11 @@ CT_GL_BUDGETS_F_STG AS (
     SELECT 
         CAST(Bal.LEDGER_ID AS VARCHAR) AS LEDGER_ID, 
         CAST(Bal.GLCC_ID AS VARCHAR) AS GLCC_ID, 
-        CAST(Period.PERIOD_NAME || '~' || Period.PERIOD_SET_NAME AS VARCHAR) AS PERIOD_ID, 
+        CAST(
+            -- CAST(Period.PERIOD_NAME || '~' || Period.PERIOD_SET_NAME AS VARCHAR) AS PERIOD_ID, 
+            -- Commented out due to issue
+            '' AS VARCHAR
+        ) AS PERIOD_ID, 
         CAST(
             ISNULL(
                 CAST(
@@ -47,7 +51,9 @@ CT_GL_BUDGETS_F_STG AS (
                 0
             ) AS VARCHAR
         ) AS BUDGET_MONTH_ID, 
-        Period.PERIOD_NAME AS BUDGET_MONTH, 
+        -- Period.PERIOD_NAME AS BUDGET_MONTH, 
+        -- Commented out due to issue
+        '' AS BUDGET_MONTH, 
         ISNULL(A.BUDGET_NAME_1, 'Budget') AS BUDGET_NAME, 
         Ledger.LEDGER_NAME AS LEDGER_NAME, 
         Bal.CURRENCY_CODE AS CURRENCY_CODE, 
@@ -73,12 +79,17 @@ CT_GL_BUDGETS_F_STG AS (
         ISNULL(NULL, '') AS MGMT_REPORTING_LINE, 
         ISNULL(NULL, '') AS VEW, 
         ISNULL(NULL, '') AS DATA_LOAD_CUBE_NAME, 
-        CONCAT(Bal.LEDGER_ID, '~', Bal.GLCC_ID, '~', Period.PERIOD_NAME, '~', Bal.CURRENCY_CODE) AS INTEGRATION_ID, 
+        -- CONCAT(Bal.LEDGER_ID, '~', Bal.GLCC_ID, '~', Period.PERIOD_NAME, '~', Bal.CURRENCY_CODE) AS INTEGRATION_ID, 
+        -- Commented out due to issue
+        '' AS INTEGRATION_ID, 
         1000 AS DATASOURCE_NUM_ID 
     FROM 
         balanceextract AS Bal 
-        INNER JOIN fiscalperiodextract AS Period ON 1 = 1 
-        INNER JOIN ledgerextractpvo AS Ledger ON 1 = 1 
+        INNER JOIN fiscalperiodextract AS Period 
+            -- ON Bal.PERIOD_NAME = Period.PERIOD_NAME -- Commented out due to issue
+            ON 1 = 1  -- Adjust this join condition as necessary
+        INNER JOIN ledgerextractpvo AS Ledger 
+            ON 1 = 1 
         INNER JOIN codecombinationextract AS CC 
             ON Bal.PERIOD_NAME = Period.PERIOD_NAME 
             AND Bal.LEDGER_ID = Ledger.LEDGER_ID 
@@ -156,7 +167,9 @@ CT_GL_BUDGETS_F_STG AS (
     GROUP BY 
         Bal.LEDGER_ID, 
         Bal.GLCC_ID, 
-        Period.PERIOD_NAME || '~' || Period.PERIOD_SET_NAME, 
+        -- CAST(Period.PERIOD_NAME || '~' || Period.PERIOD_SET_NAME AS VARCHAR) AS PERIOD_ID, 
+        -- Commented out due to issue
+        '', 
         CAST(
             ISNULL(
                 CAST(
@@ -177,7 +190,9 @@ CT_GL_BUDGETS_F_STG AS (
                 0
             ) AS VARCHAR
         ), 
-        Period.PERIOD_NAME, 
+        -- Period.PERIOD_NAME, 
+        -- Commented out due to issue
+        '', 
         ISNULL(A.BUDGET_NAME_1, 'Budget'), 
         Ledger.LEDGER_NAME, 
         Bal.CURRENCY_CODE, 
@@ -194,4 +209,4 @@ CT_GL_BUDGETS_F_STG AS (
         CONCAT(Bal.LEDGER_ID, '~', Bal.GLCC_ID, '~', Period.PERIOD_NAME, '~', Bal.CURRENCY_CODE)
 )
 SELECT * 
-FROM CT_GL_BUDGETS_F_STG;
+FROM CT_GL_BUDGETS_F_STG
