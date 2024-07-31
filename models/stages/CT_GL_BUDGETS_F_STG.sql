@@ -249,7 +249,7 @@ codecombination AS (
     CODECOMBINATIONSTARTDATEACTIVE AS START_DT_ACTIVE,
     CODECOMBINATIONSUMMARYFLAG AS SUMMARY_FLAG FROM raw.fscmtopmodelam_finextractam_glbiccextractam_codecombinationextractpvo
 ),
-CT_GL_BUDGETS_F_STG AS (
+WITH CT_GL_BUDGETS_F_STG AS (
     SELECT 
         CAST(Bal.LEDGER_ID AS STRING) AS LEDGER_ID,
         CAST(Bal.GLCC_ID AS STRING) AS GLCC_ID,
@@ -284,11 +284,12 @@ CT_GL_BUDGETS_F_STG AS (
         CC.SEGMENT6 AS SEGMENT6,
         CC.SEGMENT7 AS SEGMENT7,
         CC.SEGMENT8 AS SEGMENT8,
-        IFNULL(SUM(CAST(Bal.PERIOD_NET_CR AS FLOAT64)), 0) AS PERIOD_NET_DR,
-        IFNULL(SUM(CAST(Bal.PERIOD_NET_DR AS FLOAT64)), 0) AS PERIOD_NET_CR,
-        IFNULL(SUM(
-            CAST(Bal.PERIOD_NET_CR AS FLOAT64) - CAST(Bal.PERIOD_NET_DR AS FLOAT64)
-        ), 0) AS AMOUNT,
+        IFNULL(SUM(CAST(Bal.PERIOD_NET_CR AS FLOAT64)), 0) AS PERIOD_NET_CR,
+        IFNULL(SUM(CAST(Bal.PERIOD_NET_DR AS FLOAT64)), 0) AS PERIOD_NET_DR,
+        IFNULL(
+            SUM(CAST(Bal.PERIOD_NET_CR AS FLOAT64) - CAST(Bal.PERIOD_NET_DR AS FLOAT64)),
+            0
+        ) AS AMOUNT,
         MAX(IFNULL(A.CREATION_DT_1, Bal.LAST_UPDATE_DT)) AS CREATION_DT,
         MAX(IFNULL(A.LAST_UPDATE_DT_1, Bal.LAST_UPDATE_DT)) AS LAST_UPDATE_DT,
         MAX(IFNULL(A.CREATED_BY_1, Bal.LAST_UPDATED_BY)) AS CREATED_BY,
@@ -312,8 +313,10 @@ CT_GL_BUDGETS_F_STG AS (
         1000 AS DATASOURCE_NUM_ID
     FROM 
         balanceextract AS Bal
-    INNER JOIN fiscalperiodextract AS Period ON 1 = 1
-    INNER JOIN ledgerextractpvo AS Ledger ON 1 = 1
+    INNER JOIN fiscalperiodextract AS Period 
+        ON 1 = 1
+    INNER JOIN ledgerextractpvo AS Ledger 
+        ON 1 = 1
     INNER JOIN codecombinationextract AS CC 
         ON Bal.PERIOD_NAME = Period.PERIOD_NAME 
         AND Bal.LEDGER_ID = Ledger.LEDGER_ID 
@@ -378,7 +381,8 @@ CT_GL_BUDGETS_F_STG AS (
             AND Budject.SEGMENT3 = CCC.SEGMENT3 
             AND Budject.SEGMENT4 = CCC.SEGMENT4 
             AND Budject.SEGMENT5 = CCC.SEGMENT5
-    ) A ON Bal.GLCC_ID = A.INTEGRATION_ID_1
+    ) A 
+        ON Bal.GLCC_ID = A.INTEGRATION_ID_1
     WHERE 
         1 = 1
     GROUP BY 
@@ -398,7 +402,8 @@ CT_GL_BUDGETS_F_STG AS (
                         LPAD(CAST(EXTRACT(DAY FROM PARSE_DATE('%Y-%m-%d', Period.PERIOD_DT_ID)) AS STRING), 2, '0')
                     ) AS INT64
                 ) AS DECIMAL,
-            0) AS STRING
+                0
+            ) AS STRING
         ), 
         Period.PERIOD_NAME, 
         IFNULL(A.BUDGET_NAME_1, 'Budget'), 
@@ -425,3 +430,4 @@ CT_GL_BUDGETS_F_STG AS (
         )
 )
 SELECT * FROM CT_GL_BUDGETS_F_STG
+
