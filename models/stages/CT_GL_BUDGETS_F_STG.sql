@@ -266,8 +266,9 @@ CT_GL_BUDGETS_F_STG AS (
                     CONCAT(
                         CAST(EXTRACT(YEAR FROM Period.PERIOD_DT_ID) AS STRING)
                         --CAST(YEAR(Period.PERIOD_DT_ID) AS STRING), 
-                        LPAD(CAST(MONTH(Period.PERIOD_DT_ID) AS STRING), 2, '0'),
-                        LPAD(CAST(DAY(Period.PERIOD_DT_ID) AS STRING), 2, '0')
+                        LPAD(CAST(EXTRACT(MONTH FROM Period.PERIOD_DT_ID) AS STRING), 2, '0'),
+                        LPAD(CAST(EXTRACT(DAY FROM Period.PERIOD_DT_ID) AS STRING), 2, '0')
+
                     ) AS INT64
                 ) AS DECIMAL
             , 0) AS STRING
@@ -393,9 +394,12 @@ CT_GL_BUDGETS_F_STG AS (
             IFNULL(
                 CAST(
                     CONCAT(
-                        CAST(YEAR(Period.PERIOD_DT_ID) AS STRING), 
-                        LPAD(CAST(MONTH(Period.PERIOD_DT_ID) AS STRING), 2, '0'),
-                        LPAD(CAST(DAY(Period.PERIOD_DT_ID) AS STRING), 2, '0')
+                        CAST(EXTRACT(YEAR FROM Period.PERIOD_DT_ID) AS STRING)
+
+                        --CAST(YEAR(Period.PERIOD_DT_ID) AS STRING), 
+                        LPAD(CAST(EXTRACT(MONTH FROM Period.PERIOD_DT_ID) AS STRING), 2, '0'),
+                        LPAD(CAST(EXTRACT(DAY FROM Period.PERIOD_DT_ID) AS STRING), 2, '0')
+
                     ) AS INT64
                 ) AS DECIMAL
             , 0) AS STRING
