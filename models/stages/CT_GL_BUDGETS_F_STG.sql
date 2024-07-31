@@ -257,16 +257,18 @@ CT_GL_BUDGETS_F_STG AS (
     CAST(
       IFNULL(
         CAST(
-          CAST(
+    IFNULL(
+        CAST(
+            CAST(
             CONCAT(
-              EXTRACT(YEAR FROM Period.PERIOD_DT_ID), 
-              LPAD(CAST(EXTRACT(MONTH FROM Period.PERIOD_DT_ID) AS STRING), 2, '0'), 
-              LPAD(CAST(EXTRACT(DAY FROM Period.PERIOD_DT_ID) AS STRING), 2, '0')
+                CAST(EXTRACT(YEAR FROM SAFE.PARSE_DATE('%Y-%m-%d', PERIODENDDATE)) AS STRING), 
+                LPAD(CAST(EXTRACT(MONTH FROM SAFE.PARSE_DATE('%Y-%m-%d', PERIODENDDATE)) AS STRING), 2, '0'), 
+                LPAD(CAST(EXTRACT(DAY FROM SAFE.PARSE_DATE('%Y-%m-%d', PERIODENDDATE)) AS STRING), 2, '0')
             ) AS INT64
-          ) AS FLOAT64
+            ) AS NUMERIC
         ), 
         0
-      ) AS STRING
+        ) AS STRING
     ) AS BUDGET_MONTH_ID, 
     Period.PERIOD_NAME AS BUDGET_MONTH, 
     IFNULL(A.BUDGET_NAME_1, 'Budget') AS BUDGET_NAME, 
