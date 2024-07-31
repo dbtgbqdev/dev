@@ -24,6 +24,8 @@ models:
       +schema: raw
     stage:
       +schema: stage
+    stages:
+      +schema: dbt_osjl  
     example:
       +materialized: table
 
