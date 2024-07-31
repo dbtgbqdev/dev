@@ -400,8 +400,8 @@ CT_GL_BUDGETS_F_STG AS (
     Ledger.LEDGER_CURR_CODE, 
     CONCAT(Bal.LEDGER_ID, '~', Bal.GLCC_ID, '~', Period.PERIOD_NAME, '~', Bal.CURRENCY_CODE)
 )
+
 SELECT 
   * 
 FROM 
   CT_GL_BUDGETS_F_STG
-
