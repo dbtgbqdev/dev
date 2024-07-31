@@ -253,13 +253,7 @@ WITH CT_GL_BUDGETS_F_STG AS (
     SELECT 
         CAST(Bal.LEDGER_ID AS STRING) AS LEDGER_ID,
         CAST(Bal.GLCC_ID AS STRING) AS GLCC_ID,
-        CAST(
-            CONCAT(
-                Period.PERIOD_NAME, 
-                '~', 
-                Period.PERIOD_SET_NAME
-            ) AS STRING
-        ) AS PERIOD_ID,
+        CONCAT(Period.PERIOD_NAME, '~', Period.PERIOD_SET_NAME) AS PERIOD_ID,
         CAST(
             IFNULL(
                 CAST(
@@ -294,22 +288,14 @@ WITH CT_GL_BUDGETS_F_STG AS (
         MAX(IFNULL(A.LAST_UPDATE_DT_1, Bal.LAST_UPDATE_DT)) AS LAST_UPDATE_DT,
         MAX(IFNULL(A.CREATED_BY_1, Bal.LAST_UPDATED_BY)) AS CREATED_BY,
         MAX(IFNULL(A.LAST_UPDATED_BY_1, Bal.LAST_UPDATED_BY)) AS LAST_UPDATED_BY,
-        IFNULL(NULL, 'Standard') AS TYPE,
-        IFNULL(NULL, '') AS SCENARIO,
+        'Standard' AS TYPE,
+        '' AS SCENARIO,
         CAST(A.OBJ_VERSION_NO_1 AS STRING) AS VERSION,
         Ledger.LEDGER_CURR_CODE AS CURRENCY,
-        IFNULL(NULL, '') AS MGMT_REPORTING_LINE,
-        IFNULL(NULL, '') AS VEW,
-        IFNULL(NULL, '') AS DATA_LOAD_CUBE_NAME,
-        CONCAT(
-            Bal.LEDGER_ID, 
-            '~', 
-            Bal.GLCC_ID, 
-            '~', 
-            Period.PERIOD_NAME, 
-            '~', 
-            Bal.CURRENCY_CODE
-        ) AS INTEGRATION_ID,
+        '' AS MGMT_REPORTING_LINE,
+        '' AS VEW,
+        '' AS DATA_LOAD_CUBE_NAME,
+        CONCAT(Bal.LEDGER_ID, '~', Bal.GLCC_ID, '~', Period.PERIOD_NAME, '~', Bal.CURRENCY_CODE) AS INTEGRATION_ID,
         1000 AS DATASOURCE_NUM_ID
     FROM 
         balanceextract AS Bal
@@ -323,7 +309,7 @@ WITH CT_GL_BUDGETS_F_STG AS (
         AND Bal.GLCC_ID = CC.INTEGRATION_ID 
         AND Ledger.PERIOD_SET_NAME = Period.PERIOD_SET_NAME 
         AND Bal.ACTUAL_FLAG IN ('A', 'B')
-    LEFT OUTER JOIN (
+    LEFT JOIN (
         SELECT 
             CCC.INTEGRATION_ID AS INTEGRATION_ID, 
             CCC.SEGMENT1 AS SEGMENT1, 
@@ -388,11 +374,7 @@ WITH CT_GL_BUDGETS_F_STG AS (
     GROUP BY 
         Bal.LEDGER_ID, 
         Bal.GLCC_ID, 
-        CONCAT(
-            Period.PERIOD_NAME, 
-            '~', 
-            Period.PERIOD_SET_NAME
-        ), 
+        CONCAT(Period.PERIOD_NAME, '~', Period.PERIOD_SET_NAME), 
         CAST(
             IFNULL(
                 CAST(
@@ -419,15 +401,7 @@ WITH CT_GL_BUDGETS_F_STG AS (
         CC.SEGMENT8, 
         A.OBJ_VERSION_NO_1, 
         Ledger.LEDGER_CURR_CODE, 
-        CONCAT(
-            Bal.LEDGER_ID, 
-            '~', 
-            Bal.GLCC_ID, 
-            '~', 
-            Period.PERIOD_NAME, 
-            '~', 
-            Bal.CURRENCY_CODE
-        )
+        CONCAT(Bal.LEDGER_ID, '~', Bal.GLCC_ID, '~', Period.PERIOD_NAME, '~', Bal.CURRENCY_CODE)
 )
-SELECT * FROM CT_GL_BUDGETS_F_STG
 
+SELECT * FROM CT_GL_BUDGETS_F_STG
