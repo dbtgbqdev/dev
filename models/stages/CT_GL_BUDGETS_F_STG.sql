@@ -264,15 +264,15 @@ CT_GL_BUDGETS_F_STG AS (
             IFNULL(
                 CAST(
                     CONCAT(
-                        CAST(EXTRACT(YEAR FROM Period.PERIOD_DT_ID) AS STRING)
-                        --CAST(YEAR(Period.PERIOD_DT_ID) AS STRING), 
-                          LPAD(CAST(EXTRACT(MONTH FROM Period.PERIOD_DT_ID) AS STRING), 2, '0'),
-                          LPAD(CAST(EXTRACT(DAY FROM Period.PERIOD_DT_ID) AS STRING), 2, '0')
-
+                        CAST(EXTRACT(YEAR FROM Period.PERIOD_DT_ID) AS STRING),
+                        FORMAT('%02d', EXTRACT(MONTH FROM Period.PERIOD_DT_ID)),
+                        FORMAT('%02d', EXTRACT(DAY FROM Period.PERIOD_DT_ID))
                     ) AS INT64
-                ) AS STRING
-            , 0) AS STRING
-        ) AS BUDGET_MONTH_ID,
+                ) AS DECIMAL
+                , 0
+            ) AS STRING
+        ) AS BUDGET_MONTH_ID
+,
         Period.PERIOD_NAME AS BUDGET_MONTH,
         IFNULL(A.BUDGET_NAME_1, 'Budget') AS BUDGET_NAME,
         Ledger.LEDGER_NAME AS LEDGER_NAME,
