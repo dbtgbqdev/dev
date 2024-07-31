@@ -397,8 +397,8 @@ CT_GL_BUDGETS_F_STG AS (
                         CAST(EXTRACT(YEAR FROM Period.PERIOD_DT_ID) AS STRING)
 
                         --CAST(YEAR(Period.PERIOD_DT_ID) AS STRING), 
-                        LPAD(CAST(EXTRACT(MONTH FROM Period.PERIOD_DT_ID) AS STRING), 2, '0'),
-                        LPAD(CAST(EXTRACT(DAY FROM Period.PERIOD_DT_ID) AS STRING), 2, '0')
+                        FORMAT('%02d', EXTRACT(MONTH FROM Period.PERIOD_DT_ID)),
+                        FORMAT('%02d', EXTRACT(DAY FROM Period.PERIOD_DT_ID))
 
                     ) AS INT64
                 ) AS DECIMAL
