@@ -382,16 +382,17 @@ CT_GL_BUDGETS_F_STG AS (
     Bal.GLCC_ID, 
     Period.PERIOD_NAME + '~' + Period.PERIOD_SET_NAME, 
     CAST(
-        IFNULL(
+    IFNULL(
         CAST(
-            CAST(
-            CONCAT(
-                CAST(EXTRACT(YEAR FROM SAFE.PARSE_DATE('%Y-%m-%d', Period.PERIOD_DT_ID)) AS STRING), 
-                LPAD(CAST(EXTRACT(MONTH FROM SAFE.PARSE_DATE('%Y-%m-%d', Period.PERIOD_DT_ID)) AS STRING), 2, '0'), 
-                LPAD(CAST(EXTRACT(DAY FROM SAFE.PARSE_DATE('%Y-%m-%d', Period.PERIOD_DT_ID)) AS STRING), 2, '0')
-            ) AS INT64
-            ) AS FLOAT64
+        CONCAT(
+            CAST(EXTRACT(YEAR FROM SAFE.PARSE_DATE('%Y-%m-%d', Period.PERIOD_DT_ID)) AS STRING), 
+            LPAD(CAST(EXTRACT(MONTH FROM SAFE.PARSE_DATE('%Y-%m-%d', Period.PERIOD_DT_ID)) AS STRING), 2, '0'), 
+            LPAD(CAST(EXTRACT(DAY FROM SAFE.PARSE_DATE('%Y-%m-%d', Period.PERIOD_DT_ID)) AS STRING), 2, '0')
+        ) AS STRING
         ), 
+        '0'
+    ) AS STRING
+    ), 
         0
         ) AS STRING
     ), 
