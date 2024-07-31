@@ -257,19 +257,14 @@ CT_GL_BUDGETS_F_STG AS (
     CAST(
       IFNULL(
         CAST(
-          IFNULL(
-            CAST(
-              CAST(
-                CONCAT(
-                  CAST(EXTRACT(YEAR FROM SAFE.PARSE_DATE('%Y-%m-%d', PERIODENDDATE)) AS STRING), 
-                  LPAD(CAST(EXTRACT(MONTH FROM SAFE.PARSE_DATE('%Y-%m-%d', PERIODENDDATE)) AS STRING), 2, '0'), 
-                  LPAD(CAST(EXTRACT(DAY FROM SAFE.PARSE_DATE('%Y-%m-%d', PERIODENDDATE)) AS STRING), 2, '0')
-                ) AS INT64
-              ) AS NUMERIC
-            ), 
-            0
-          ) AS STRING
-        ) AS BUDGET_MONTH_ID, 
+          CONCAT(
+            CAST(EXTRACT(YEAR FROM SAFE.PARSE_DATE('%Y-%m-%d', PERIODENDDATE)) AS STRING), 
+            LPAD(CAST(EXTRACT(MONTH FROM SAFE.PARSE_DATE('%Y-%m-%d', PERIODENDDATE)) AS STRING), 2, '0'), 
+            LPAD(CAST(EXTRACT(DAY FROM SAFE.PARSE_DATE('%Y-%m-%d', PERIODENDDATE)) AS STRING), 2, '0')
+          ) AS INT64
+        ) AS NUMERIC
+      ) AS STRING
+    ) AS BUDGET_MONTH_ID, 
     Period.PERIOD_NAME AS BUDGET_MONTH, 
     IFNULL(A.BUDGET_NAME_1, 'Budget') AS BUDGET_NAME, 
     Ledger.LEDGER_NAME AS LEDGER_NAME, 
