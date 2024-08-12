@@ -249,12 +249,12 @@ codecombination AS (
     CODECOMBINATIONSTARTDATEACTIVE AS START_DT_ACTIVE,
     CODECOMBINATIONSUMMARYFLAG AS SUMMARY_FLAG FROM raw.fscmtopmodelam_finextractam_glbiccextractam_codecombinationextractpvo
 ),
-CT_GL_BUDGETS_F_STG AS (
+CT_GL_BUDGET_F_STG AS (
   SELECT 
     CAST(Bal.LEDGER_ID AS STRING) AS LEDGER_ID, 
     CAST(Bal.GLCC_ID AS STRING) AS GLCC_ID, 
     CAST(CONCAT(Period.PERIOD_NAME, '~', Period.PERIOD_SET_NAME) AS STRING) AS PERIOD_ID, 
-    CAST(( IFNULL(
+    CAST( IFNULL(
         CAST( CAST( 
         CONCAT(
         CAST(EXTRACT(YEAR FROM SAFE.PARSE_DATE('%Y-%m-%d', Period.PERIOD_DT_ID)) AS STRING), 
@@ -264,7 +264,7 @@ CT_GL_BUDGETS_F_STG AS (
         AS INT64)      
         AS FLOAT64)    
         ,0)       
-        AS STRING))
+        AS STRING)
      AS BUDGET_MONTH_ID, 
     Period.PERIOD_NAME AS BUDGET_MONTH, 
     IFNULL(A.BUDGET_NAME_1, 'Budget') AS BUDGET_NAME, 
@@ -376,14 +376,16 @@ CT_GL_BUDGETS_F_STG AS (
     CONCAT(Period.PERIOD_NAME, '~', Period.PERIOD_SET_NAME), 
     CAST(
       IFNULL(
-        CAST(
-          CONCAT(
-            CAST(EXTRACT(YEAR FROM SAFE.PARSE_DATE('%Y-%m-%d', Period.PERIOD_DT_ID)) AS STRING), 
-            LPAD(CAST(EXTRACT(MONTH FROM SAFE.PARSE_DATE('%Y-%m-%d', Period.PERIOD_DT_ID)) AS STRING), 2, '0'), 
-            LPAD(CAST(EXTRACT(DAY FROM SAFE.PARSE_DATE('%Y-%m-%d', Period.PERIOD_DT_ID)) AS STRING), 2, '0')
-          ) AS INT64
-        , '0') AS STRING
-      , '0') AS STRING
+        CAST( CAST( 
+        CONCAT(
+        CAST(EXTRACT(YEAR FROM SAFE.PARSE_DATE('%Y-%m-%d', Period.PERIOD_DT_ID)) AS STRING), 
+                LPAD(CAST(EXTRACT(MONTH FROM SAFE.PARSE_DATE('%Y-%m-%d', Period.PERIOD_DT_ID)) AS STRING), 2, '0'), 
+                LPAD(CAST(EXTRACT(DAY FROM SAFE.PARSE_DATE('%Y-%m-%d', Period.PERIOD_DT_ID)) AS STRING), 2, '0')
+        )  
+        AS INT64)      
+        AS FLOAT64)    
+        ,0)       
+        AS STRING
     ), 
     Period.PERIOD_NAME, 
     IFNULL(A.BUDGET_NAME_1, 'Budget'), 
@@ -405,4 +407,4 @@ CT_GL_BUDGETS_F_STG AS (
 SELECT 
   * 
 FROM 
-  CT_GL_BUDGETS_F_STG
+  CT_GL_BUDGET_F_STG
