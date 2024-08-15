@@ -1,47 +1,110 @@
-{% macro insert_unspecified_record(model_name) %}
-    {% if model_name is none %}
-        {% do log('No model name provided.', info=True) %}
-    {% else %}
-        {# Get columns for the given model #}
-        {% set columns_query %}
+{% macro insert_unspecified_record(table_name) %}
+    {% do log("Running insert_unspecified_record for table: " ~ table_name, info=True) %}
+
+    -- Define the query to get column names for the specified table
+    {% set columns_query %}
         SELECT column_name
         FROM `osjl-kt.control_tables.unspecified_column_control`
-        WHERE table_name = '{{ model_name }}'
-        {% endset %}
-        
-        {% set result = run_query(columns_query) %}
-        
-        {% if result and result.rows %}
-            {% set columns = result.columns['column_name'] %}
-            
-            {# Initialize lists for column names and values #}
-            {% set column_list = [] %}
-            {% set value_list = [] %}
-            
-            {% for column in columns %}
-                {% if column.endswith('_ID') %}
-                    {% set column_list = column_list.append(column) %}
-                    {% set value_list = value_list.append('0') %}
-                {% else %}
-                    {% set column_list = column_list.append(column) %}
-                    {% set value_list = value_list.append("'unspecified'") %}
-                {% endif %}
-            {% endfor %}
-            
-            {% set column_string = column_list | join(', ') %}
-            {% set value_string = value_list | join(', ') %}
-            
-            {# Generate the INSERT statement #}
-            INSERT INTO `osjl-kt.stage.{{ model_name }}`
-            (
-                {{ column_string }}
-            )
-            VALUES
-            (
-                {{ value_string }}
-            );
-        {% else %}
-            {% do log('No columns found for table ' ~ model_name, info=True) %}
-        {% endif %}
+        WHERE table_name = '{{ table_name }}'
+    {% endset %}
+    
+    {% do log("Query to get column names: " ~ columns_query, info=True) %}
+    
+    {% set columns_result = run_query(columns_query) %}
+    
+    {% if columns_result is none %}
+        {% do log("No result from query for table: " ~ table_name, info=True) %}
+        {% do return('') %}
     {% endif %}
+    
+    {% set column_names = columns_result.columns if columns_result else [] %}
+    
+    {% do log("Retrieved columns: " ~ column_names | join(', '), info=True) %}
+    
+    {% if column_names | length == 0 %}
+        {% do log("No columns found for table: " ~ table_name, info=True) %}
+        {% do return('') %}
+    {% endif %}
+
+    -- Generate the insert values based on column names
+    {% set insert_values = [] %}
+    {% for column_name in column_names %}
+        {% if column_name.endswith('_ID') %}
+            {% do insert_values.append('0') %}
+        {% else %}
+            {% do insert_values.append("'unspecified'") %}
+        {% endif %}
+    {% endfor %}
+
+    -- Combine columns and insert values into an insert statement
+    {% set insert_statement %}
+        INSERT INTO `osjl-kt.stage.{{ table_name }}`
+        (
+            {{ column_names | join(', ') }}
+        )
+        VALUES
+        (
+            {{ insert_values | join(', ') }}
+        )
+    {% endset %}
+    
+    {% do log("Generated insert statement: " ~ insert_statement, info=True) %}
+    
+    {{ insert_statement }}
+
+{% endmacro %}
+{% macro insert_unspecified_record(table_name) %}
+    {% do log("Running insert_unspecified_record for table: " ~ table_name, info=True) %}
+
+    -- Define the query to get column names for the specified table
+    {% set columns_query %}
+        SELECT column_name
+        FROM `osjl-kt.control_tables.unspecified_column_control`
+        WHERE table_name = '{{ table_name }}'
+    {% endset %}
+    
+    {% do log("Query to get column names: " ~ columns_query, info=True) %}
+    
+    {% set columns_result = run_query(columns_query) %}
+    
+    {% if columns_result is none %}
+        {% do log("No result from query for table: " ~ table_name, info=True) %}
+        {% do return('') %}
+    {% endif %}
+    
+    {% set column_names = columns_result.columns if columns_result else [] %}
+    
+    {% do log("Retrieved columns: " ~ column_names | join(', '), info=True) %}
+    
+    {% if column_names | length == 0 %}
+        {% do log("No columns found for table: " ~ table_name, info=True) %}
+        {% do return('') %}
+    {% endif %}
+
+    -- Generate the insert values based on column names
+    {% set insert_values = [] %}
+    {% for column_name in column_names %}
+        {% if column_name.endswith('_ID') %}
+            {% do insert_values.append('0') %}
+        {% else %}
+            {% do insert_values.append("'unspecified'") %}
+        {% endif %}
+    {% endfor %}
+
+    -- Combine columns and insert values into an insert statement
+    {% set insert_statement %}
+        INSERT INTO `osjl-kt.stage.{{ table_name }}`
+        (
+            {{ column_names | join(', ') }}
+        )
+        VALUES
+        (
+            {{ insert_values | join(', ') }}
+        )
+    {% endset %}
+    
+    {% do log("Generated insert statement: " ~ insert_statement, info=True) %}
+    
+    {{ insert_statement }}
+
 {% endmacro %}
