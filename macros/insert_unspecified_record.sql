@@ -1,6 +1,4 @@
-{% macro insert_unspecified_record() %}
-    {% set model_name = this.name %}
-
+{% macro insert_unspecified_record(model_name) %}
     {# Define a SQL statement to get column names for the current model #}
     {% set columns_query %}
     SELECT column_name
