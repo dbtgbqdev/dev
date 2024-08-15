@@ -8,10 +8,10 @@
         FROM `osjl-kt.control_tables.unspecified_column_control`
         WHERE table_name = '{{ model_name }}'
         {% endset %}
-
+        
         {% set result = run_query(columns_query) %}
 
-        {% if result is not none and result.row_count > 0 %}
+        {% if result and result.row_count > 0 %}
             {% set columns = result.columns['column_name'].values() %}
             
             {# Initialize lists for column names and values #}
