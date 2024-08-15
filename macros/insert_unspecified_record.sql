@@ -1,4 +1,9 @@
 {% macro insert_unspecified_record(model_name) %}
+    {% if model_name is none %}
+        {% do log('No model name provided.', info=True) %}
+        {% return %}
+    {% endif %}
+
     {# Get columns for the given model #}
     {% set columns_query %}
     SELECT column_name
@@ -38,7 +43,6 @@
             {{ value_string }}
         );
     {% else %}
-        {# Handle case where no columns are found #}
         {% do log('No columns found for table ' ~ model_name, info=True) %}
     {% endif %}
 {% endmacro %}
