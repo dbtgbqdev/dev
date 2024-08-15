@@ -10,9 +10,9 @@
         {% endset %}
         
         {% set result = run_query(columns_query) %}
-
-        {% if result and len(result) > 0 %}
-            {% set columns = result['column_name'] %}
+        
+        {% if result and result.rows %}
+            {% set columns = result.columns['column_name'] %}
             
             {# Initialize lists for column names and values #}
             {% set column_list = [] %}
