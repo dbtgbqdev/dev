@@ -11,8 +11,8 @@
         
         {% set result = run_query(columns_query) %}
 
-        {% if result and result.row_count > 0 %}
-            {% set columns = result.columns['column_name'].values() %}
+        {% if result and len(result) > 0 %}
+            {% set columns = result['column_name'] %}
             
             {# Initialize lists for column names and values #}
             {% set column_list = [] %}
