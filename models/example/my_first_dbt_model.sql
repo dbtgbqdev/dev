@@ -5,8 +5,8 @@
     This will override configurations stated in dbt_project.yml
 
     Try changing "table" to "view" below
-*/
-
+*/hebtbr
+testing rama
 {{ config(materialized='table') }}
 
 with source_data as (
