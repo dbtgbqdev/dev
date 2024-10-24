@@ -6,7 +6,7 @@
 
     Try changing "table" to "view" below
 */
-
+testing rama
 {{ config(materialized='table') }}
 
 with source_data as (
