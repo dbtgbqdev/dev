@@ -3,4 +3,4 @@
     full_refresh=true
 ) }}
 
-{{ insert_unspecified_record('osjl-kt.stage.CT_CUSTOMER_D_STG') }}
+SELECT * FROM  {{ ref ("fscmtopmodelam_analyticsserviceam_currenciespvo")  }}
