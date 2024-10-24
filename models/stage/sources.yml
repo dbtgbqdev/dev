@@ -1,0 +1,13 @@
+version: 2 
+
+sources:
+  - name: extract
+    schema:  "{{ env_var('DBT_BQ_SOURCE_DATASET') }}" 
+    tables: 
+      - name: customer
+        identifier: fscmtopmodelam_partiesanalyticsam_customer
+      - name: customeraccount
+        identifier: fscmtopmodelam_partiesanalyticsam_customeraccount
+      - name: custacctsiteuseloc
+        identifier: fscmtopmodelam_partiesanalyticsam_custacctsiteuseloc
+           
